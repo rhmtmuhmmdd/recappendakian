@@ -209,6 +209,8 @@ body,#bar,.journey,.photo,.ph,#menu,.quote,h1,h2,h3,.meta{transition-timing-func
 #intro h1{font-size:clamp(1.5rem,5vw,2.8rem);letter-spacing:.12em;margin:.2em 0 1.8rem;animation-delay:.15s}
 #intro .btn{animation-delay:.35s}
 .on-intro #bar .logo{visibility:hidden}
+#burger{transition:background .4s var(--ease),transform .35s var(--ease),opacity .8s var(--ease),visibility .8s}
+.on-intro #burger{opacity:0;visibility:hidden;pointer-events:none}
 .on-intro #bar{background:transparent;border-bottom-color:transparent;backdrop-filter:none}
 /* efek air saat layar disentuh */
 #ripples{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
@@ -326,37 +328,57 @@ const coverQuotes = [
   "Leave the noise behind.","Let the journey speak.","The quiet is part of the climb.","Carry less, notice more."
 ];
 
-// seq("awalan", 5) -> ["awalan01.jpg" ... "awalan05.jpg"]
-// Cara menambah foto: tambahkan nama file di akhir, contoh:
-//   documentation: [...seq("otherkappire", 5), "otherkappire06.jpg", "foto-baru.jpg"]
-// atau tulis array biasa: documentation: ["a.jpg", "b.jpg"]
+// seq("awalan", 5) menghasilkan ["awalan01.jpg" ... "awalan05.jpg"] (dipakai otomatis oleh daftar destinasi di bawah)
 const seq = (p, n) => Array.from({length:n}, (_, i) => p + String(i+1).padStart(2,"0") + ".jpg");
 
-// date & location: isi sendiri (kosong = tampil "DATE NOT SET" / "LOCATION NOT SET")
-// quote: boleh dikosongkan ""
-const journeys = [
- {id:"talung-ramma-slank",order:1,title:"Puncak Talung - Lembah Ramma - Danau Slank",date:"",location:"",mainImage:"fototalung.jpg",quote:"Every trail leaves a story.",documentation:seq("othertalungrammaslank",5)},
- {id:"danau-tanralili",order:2,title:"Danau Tanralili",date:"",location:"",mainImage:"fotodanautanralili.jpg",quote:"Where silence feels like home.",documentation:seq("otherdanautanralili",5)},
- {id:"lembah-lohe",order:3,title:"Lembah Lohe",date:"",location:"",mainImage:"fotolembahlohe.jpg",quote:"",documentation:seq("otherlembahlohe",5)},
- {id:"bulu-bialo",order:4,title:"Bulu Bialo",date:"",location:"",mainImage:"fotobulubialo.jpg",quote:"Beyond the ordinary.",documentation:seq("otherbulubialo",5)},
- {id:"kappire",order:5,title:"Gn. Kappire",date:"",location:"",mainImage:"fotokappire.jpg",quote:"",documentation:seq("otherkappire",5)},
- {id:"bulusaraung",order:6,title:"Bulusaraung",date:"",location:"",mainImage:"fotobulusaraung.jpg",quote:"The mountains remember.",documentation:seq("otherbulusaraung",5)},
- {id:"talung-ramma-slank-2",order:7,title:"Puncak Talung - Lembah Ramma - Danau Slank pt.2",date:"",location:"",mainImage:"fototalungpt2.jpg",quote:"",documentation:seq("othertalungrammaslankpt2",5)},
- {id:"bawakaraeng",order:8,title:"Gn. Bawakaraeng",date:"",location:"",mainImage:"fotobawakaraeng.jpg",quote:"Somewhere between the earth and the sky.",documentation:seq("otherbawakaraeng",5)},
- {id:"bulu-saukang",order:9,title:"Bulu Saukang",date:"",location:"",mainImage:"fotobulusaukang.jpg",quote:"",documentation:seq("otherbulusaukang",5)},
- {id:"kappire-2",order:10,title:"Gn. Kappire pt.2",date:"",location:"",mainImage:"fotokappirept2.jpg",quote:"Different trails, familiar feelings.",documentation:seq("otherkappirept2",5)},
- {id:"massimpolongnge",order:11,title:"Gn. Massimpolongnge",date:"",location:"",mainImage:"fotomassimpolongnge.jpg",quote:"",documentation:seq("othermassimpolongnge",5)},
- {id:"bulu-saukang-2",order:12,title:"Bulu Saukang pt.2",date:"",location:"",mainImage:"fotobulusaukangpt2.jpg",quote:"Lost in the quiet.",documentation:seq("otherbulusaukangpt2",5)},
- {id:"latimojong",order:13,title:"Gn. Latimojong",date:"",location:"",mainImage:"fotolatimojong.jpg",quote:"The higher I went, the quieter it became.",documentation:seq("otherlatimojong",5)},
- {id:"talung-ramma-slank-3",order:14,title:"Puncak Talung - Lembah Ramma - Danau Slank pt.3",date:"",location:"",mainImage:"fototalungpt3.jpg",quote:"",documentation:seq("othertalungrammaslankpt3",5)},
- {id:"bawakaraeng-2",order:15,title:"Gn. Bawakaraeng pt.2",date:"",location:"",mainImage:"fotobawakaraengpt2.jpg",quote:"Some memories never fade.",documentation:seq("otherbawakaraengpt2",5)},
- {id:"kappire-3",order:16,title:"Gn. Kappire pt.3",date:"",location:"",mainImage:"fotokappirept3.jpg",quote:"",documentation:seq("otherkappirept3",5)},
- {id:"bulu-saukang-3",order:17,title:"Bulu Saukang pt.3",date:"",location:"",mainImage:"fotobulusaukangpt3.jpg",quote:"Let the journey speak for itself.",documentation:seq("otherbulusaukangpt3",5)},
- {id:"lompobattang",order:18,title:"Gn. Lompobattang",date:"",location:"",mainImage:"fotolompobattang.jpg",quote:"",documentation:seq("otherlompobattang",5)},
- {id:"bawakaraeng-3",order:19,title:"Gn. Bawakaraeng pt.3",date:"",location:"",mainImage:"fotobawakaraengpt3.jpg",quote:"Every trail leaves a story.",documentation:seq("otherbawakaraengpt3",5)},
- {id:"tanralili-lohe-2",order:20,title:"Danau Tanralili - Lembah Lohe pt.2",date:"",location:"",mainImage:"fototanralililohept2.jpg",quote:"",documentation:seq("othertanralililohept2",5)},
- {id:"bawakaraeng-4",order:21,title:"Gn. Bawakaraeng pt.4",date:"",location:"",mainImage:"fotobawakaraengpt4.jpg",quote:"Beyond the ordinary.",documentation:seq("otherbawakaraengpt4",5)}
+// ===== DAFTAR DESTINASI (bagian yang paling sering kamu edit) =====
+// MENAMBAH DESTINASI BARU: salin satu baris, tempel di urutan yang diinginkan
+// (paling bawah = destinasi terbaru). Nomor urut, ID, dan menu DESTINATIONS terisi otomatis.
+//
+// Isi setiap baris:
+//   title    : nama perjalanan
+//   date     : tanggal (kosong = tampil "DATE NOT SET")
+//   location : lokasi (kosong = tampil "LOCATION NOT SET")
+//   photo    : nama file foto utama
+//   docs     : awalan nama foto dokumentasi. "otherkappire" otomatis jadi otherkappire01.jpg ... otherkappire05.jpg
+//   count    : (opsional) jumlah foto dokumentasi bernomor, standarnya 5. Contoh count:8 -> sampai 08
+//   extra    : (opsional) tambahan nama file bebas, contoh extra:["foto-baru.jpg"]
+//   quote    : (opsional) kutipan pendek, boleh ""
+//   documentation : (opsional) daftar manual ["a.jpg","b.jpg"], menggantikan docs/count/extra
+const journeyList = [
+ {title:"Puncak Talung - Lembah Ramma - Danau Slank", date:"26 Juli 2025", location:"Sulawesi Selatan", photo:"fototalung.jpg", docs:"othertalungrammaslank", quote:"Every trail leaves a story."},
+ {title:"Danau Tanralili - Lembah Lohe", date:"23-24 Agustus 2025", location:"Sulawesi Selatan", photo:"fototanralililohe.jpg", docs:"othertanralililohe", quote:"Where silence feels like home."},
+ {title:"Bulu Bialo", date:"31 Agustus 2025", location:"Sulawesi Selatan", photo:"fotobulubialo.jpg", docs:"otherbulubialo", quote:"Beyond the ordinary."},
+ {title:"Gn. Kappire", date:"20 September 2025", location:"Sulawesi Selatan", photo:"fotokappire.jpg", docs:"otherkappire", quote:""},
+ {title:"Gn. Bulusaraung", date:"1 Oktober 2025", location:"Pangkep", photo:"fotobulusaraung.jpg", docs:"otherbulusaraung", quote:"The mountains remember."},
+ {title:"Puncak Talung - Lembah Ramma - Danau Slank pt.2", date:"6 Oktober 2025", location:"Sulawesi Selatan", photo:"fototalungpt2.jpg", docs:"othertalungrammaslankpt2", quote:""},
+ {title:"Gn. Bawakaraeng", date:"11-12 Oktober 2025", location:"Gowa", photo:"fotobawakaraeng.jpg", docs:"otherbawakaraeng", quote:"Somewhere between the earth and the sky."},
+ {title:"Bulu Saukang", date:"20 Oktober 2025", location:"Sulawesi Selatan", photo:"fotobulusaukang.jpg", docs:"otherbulusaukang", quote:""},
+ {title:"Gn. Kappire pt.2", date:"7 Desember 2025", location:"Sulawesi Selatan", photo:"fotokappirept2.jpg", docs:"otherkappirept2", quote:"Different trails, familiar feelings."},
+ {title:"Gn. Massimpolongnge", date:"17 Desember 2025", location:"Sulawesi Selatan", photo:"fotomassimpolongnge.jpg", docs:"othermassimpolongnge", quote:""},
+ {title:"Lappa Laona", date:"28 Desember 2025", location:"Sulawesi Selatan", photo:"fotolappalaona.jpg", docs:"otherlappalaona", quote:""},
+ {title:"Bukit Maddo", date:"27 Januari 2026", location:"Sulawesi Selatan", photo:"fotobukitmaddo.jpg", docs:"otherbukitmaddo", quote:""},
+ {title:"Banda Neira", date:"31 Maret 2026", location:"Kepulauan Banda, Maluku", photo:"fotobandaneira.jpg", docs:"otherbandaneira", quote:""},
+ {title:"Bulu Saukang pt.2", date:"9 April 2026", location:"Sulawesi Selatan", photo:"fotobulusaukangpt2.jpg", docs:"otherbulusaukangpt2", quote:"Lost in the quiet."},
+ {title:"Gn. Latimojong", date:"14-16 April 2026", location:"Enrekang", photo:"fotolatimojong.jpg", docs:"otherlatimojong", quote:"The higher I went, the quieter it became."},
+ {title:"Puncak Talung - Lembah Ramma - Danau Slank pt.3", date:"26 April 2026", location:"Sulawesi Selatan", photo:"fototalungpt3.jpg", docs:"othertalungrammaslankpt3", quote:""},
+ {title:"Gn. Bawakaraeng pt.2", date:"10-11 Mei 2026", location:"Gowa", photo:"fotobawakaraengpt2.jpg", docs:"otherbawakaraengpt2", quote:"Some memories never fade."},
+ {title:"Gn. Kappire pt.3", date:"17 Mei 2026", location:"Sulawesi Selatan", photo:"fotokappirept3.jpg", docs:"otherkappirept3", quote:""},
+ {title:"Gn. Lompobattang", date:"30-31 Mei 2026", location:"Gowa", photo:"fotolompobattang.jpg", docs:"otherlompobattang", quote:""},
+ {title:"Gn. Bawakaraeng pt.3", date:"21-22 Juli 2026", location:"Gowa", photo:"fotobawakaraengpt3.jpg", docs:"otherbawakaraengpt3", quote:"Every trail leaves a story."},
+ {title:"Gn. Bulusaraung pt.2", date:"2 Agustus 2026", location:"Pangkep", photo:"fotobulusaraungpt2.jpg", docs:"otherbulusaraungpt2", quote:""},
+ {title:"Danau Tanralili - Lembah Lohe pt.2", date:"9-11 Agustus 2026", location:"Sulawesi Selatan", photo:"fototanralililohept2.jpg", docs:"othertanralililohept2", quote:""},
+ {title:"Gn. Bawakaraeng pt.4", date:"13-14 September 2026", location:"Gowa", photo:"fotobawakaraengpt4.jpg", docs:"otherbawakaraengpt4", quote:"Beyond the ordinary."}
 ];
+
+// Bagian ini mengubah daftar di atas menjadi data lengkap. Tidak perlu diedit.
+const journeys = journeyList.map((j, i) => ({
+  id: j.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + (i + 1),
+  order: i + 1,
+  title: j.title, date: j.date || "", location: j.location || "", quote: j.quote || "",
+  mainImage: j.photo,
+  documentation: j.documentation || [...(j.docs ? seq(j.docs, j.count || 5) : []), ...(j.extra || [])]
+}));
 
 /* =====================================================================
    KODE SISTEM (tidak perlu diubah)
